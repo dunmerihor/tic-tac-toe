@@ -1,4 +1,4 @@
-const Player = (sign, turn) => {
+const Player = (name, sign, turn) => {
     const makeMove = (isCell, cellID) => {
         if (turn) {
             gameBoard.clickOnBoard(sign, cellID);
@@ -8,6 +8,8 @@ const Player = (sign, turn) => {
 
     const changeTurn = () => turn = turn ? false : true;
 
+    const getName = () => {return name};
+
     const getSign = () => {return sign};
 
     const getTurn = () => {return turn};
@@ -15,18 +17,20 @@ const Player = (sign, turn) => {
     return {
         makeMove,
         changeTurn,
+        getName,
         getSign,
         getTurn
     }
 }
 
-const player1 = Player('x', true);
-const player2 = Player('o', false);
+const player1 = Player('Player 1', 'x', true);
+const player2 = Player('Player 2', 'o', false);
 
 const gameBoard = (function(player1, player2) {
     let gameBoardInfo = [[null, null,  null],  [null,  null,  null],  [null,  null,  null]];
     const gameWrapper = document.querySelector('div.game-wrapper');
     const cellList = document.querySelector('ul#cell-list');
+    const winDisplay = document.querySelector('.win-display');
 
     const render = () => {
         cellList.innerHTML = '';
@@ -48,45 +52,65 @@ const gameBoard = (function(player1, player2) {
     const clickOnBoard = (sign, cellRow, cellColumn) => {
         gameBoardInfo[cellRow][cellColumn] = sign;
         render();
-    }
+    };
 
     const putSign = (event) => {
         const cell = event.target;
-        if (player1.getTurn() === true) {
-            clickOnBoard(player1.getSign(), cell.getAttribute('row'), cell.getAttribute('column'));
-            if (checkWin(player1.getSign())) {
-                const winDisplay = document.createElement('div');
-                winDisplay.classList.add('win-display');
-                winDisplay.textContent = 'Player 1 win!';
-                gameWrapper.appendChild(winDisplay);
-            }
-            player1.changeTurn();
-            player2.changeTurn();
+        const player = getCurrentPlayer();
+        clickOnBoard(player.getSign(), cell.getAttribute('row'), cell.getAttribute('column'));
+        if (checkWin(player.getSign())) {
+            launchWinSequence(player);
+        }
+        player1.changeTurn();
+        player2.changeTurn();
+    };
+
+    const getCurrentPlayer = () => {
+        if (player1.getTurn()) {
+            return player1;
         }
         else {
-            clickOnBoard(player2.getSign(), cell.getAttribute('row'), cell.getAttribute('column'));
-            if (checkWin(player2.getSign())) {
-                const winDisplay = document.createElement('div');
-                winDisplay.classList.add('win-display');
-                winDisplay.textContent = 'Player 2 win!';
-                gameWrapper.appendChild(winDisplay);
-            }
-            player1.changeTurn();
-            player2.changeTurn();
+            return player2;
         }
-    }
+    };
+
+    const launchWinSequence = (player) => {
+        if (checkWin(player.getSign()) === 'Tie!') {
+            winDisplay.textContent = `Tie!`;
+        }
+        else {
+            winDisplay.textContent = `${player.getName()} win!`;
+            const cells = Array.from(document.querySelectorAll('.cell'));
+            cells.forEach(cell => cell.removeEventListener('click', putSign));
+        }
+    };
+
+    const reset = () => {
+        gameBoardInfo = [[null, null,  null],  [null,  null,  null],  [null,  null,  null]];
+        winDisplay.textContent = '';
+        player1.changeTurn();
+        player2.changeTurn();
+        render();
+    };
 
     const checkWin = (sign) => {
+        let pressedCellNumber = 0;
         for (let i = 0; i < 3; i++) {
             let winCount = 0;
             for (let j = 0; j < 3; j++) {
                 if (gameBoardInfo[i][j] === sign) {
                     winCount++;
                 }
+                if (gameBoardInfo[i][j] !== null) {
+                    pressedCellNumber++;
+                }
             }
             if (winCount === 3) {
                 return true;
             }
+        }
+        if (pressedCellNumber === 9) {
+            return 'Tie!';
         }
         for (let i = 0; i < 3; i++) {
             let winCount = 0;
@@ -116,5 +140,6 @@ const gameBoard = (function(player1, player2) {
 
     return {
         clickOnBoard,
+        reset
     };
 })(player1, player2);

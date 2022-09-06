@@ -1,4 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+:root {
+    --background-color: #cbd5e1;
+    --border-color: #94a3b8;
+    --text-color: #475569;
+    --cell-size: 75px;
+}
+
 body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Roboto', sans-serif;
     margin: 0px;
     padding: 0px;
 }
@@ -9,25 +21,55 @@ ul {
     padding: 0px;
 }
 
+button {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 24px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    padding: 5px 10px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.header {
+    font-size: 44px;
+    font-weight: 300;
+}
+
 .game-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 10px;
 }
 
 #cell-list {
-    background-color: gray;
+    background-color: var(--border-color);
     display: grid;
-    grid-template-columns: repeat(3, 100px);
-    grid-template-rows: repeat(3, 100px);
-    gap: 1px;
+    grid-template-columns: repeat(3, var(--cell-size));
+    grid-template-rows: repeat(3, var(--cell-size));
+    gap: 3px;
 }
 
 .cell {
-    background-color: white;
+    background-color: var(--background-color);
     font-size: 54px;
     text-align: center;
-    height: 100px;
-    width: 100px;
+    height: var(--cell-size);
+    width: var(--cell-size);
+}
+
+.win-display {
+    height: 42px;
+    font-size: 36px;
+    font-weight: 400;
 }
