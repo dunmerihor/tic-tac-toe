@@ -102,9 +102,6 @@ const gameBoard = (function(player1, player2) {
                 if (gameBoardInfo[i][j] === sign) {
                     winCount++;
                 }
-                if (gameBoardInfo[i][j] !== null) {
-                    pressedCellNumber++;
-                }
             }
             if (winCount === 3) {
                 return true;
