@@ -88,13 +88,14 @@ const gameBoard = (function(player1, player2) {
     const reset = () => {
         gameBoardInfo = [[null, null,  null],  [null,  null,  null],  [null,  null,  null]];
         winDisplay.textContent = '';
-        player1.changeTurn();
-        player2.changeTurn();
+        if (player2.getTurn()) {
+            player1.changeTurn();
+            player2.changeTurn();
+        }
         render();
     };
 
     const checkWin = (sign) => {
-        let pressedCellNumber = 0;
         for (let i = 0; i < 3; i++) {
             let winCount = 0;
             for (let j = 0; j < 3; j++) {
@@ -109,9 +110,7 @@ const gameBoard = (function(player1, player2) {
                 return true;
             }
         }
-        if (pressedCellNumber === 9) {
-            return 'Tie!';
-        }
+
         for (let i = 0; i < 3; i++) {
             let winCount = 0;
             for (let j = 0; j < 3; j++) {
@@ -123,16 +122,30 @@ const gameBoard = (function(player1, player2) {
                 return true;
             }
         }
+
         if (gameBoardInfo[0][0] === sign &&
             gameBoardInfo[1][1] === sign &&
             gameBoardInfo[2][2] === sign) {
                 return true;
-            }
+        }
         if (gameBoardInfo[0][2] === sign &&
             gameBoardInfo[1][1] === sign &&
             gameBoardInfo[2][0] === sign) {
                 return true;
+        }
+        
+        let pressedCellNumber = 0;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (gameBoardInfo[i][j] !== null) {
+                    pressedCellNumber++;
+                }
             }
+        }
+        if (pressedCellNumber === 9) {
+            return 'Tie!';
+        }
+
         return false;
     };
 
